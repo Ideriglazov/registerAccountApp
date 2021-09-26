@@ -20,21 +20,85 @@ require 'vendor/autoload.php';
 require 'DBConnection.php';
 if (isset($_POST['newName']) && isset($_POST['newEmail']) && isset($_POST['newBirthday']) && isset($_POST['newPassword'])) {
     session_start();
-    $oldData = $_SESSION["a"];
-    $queryUpdate = "UPDATE users SET Name = '".$_POST['newName']."', Email = '".$_POST['newEmail']."', Birthday = '".$_POST['newBirthday']."', Pass = '".$_POST['newPassword']."' WHERE Email = '".$oldData['Email']."' AND Pass = '".$oldData['Pass']."'";
-    $query_run = mysqli_query($conn,$queryUpdate);
-    Flight::redirect('myAccount.php');
-    echo 'Name: '.$_POST['newName'].'<br>';
-    echo 'Email: '.$_POST['newEmail'].'<br>';
-    echo 'Birthday: '.$_POST['newBirthday'];
+    $oldData = $_SESSION['a'];
+    $name = $oldData['Name'];
+    $email = $oldData['Email'];
+    $birthday = $oldData['Birthday'];
+    if (!empty($_POST['newName'])) {
+        $queryName = "UPDATE users SET Name = '".$_POST['newName']."' WHERE Email = '".$oldData['Email']."' AND Pass = '".$oldData['Pass']."'";
+        $query_run = mysqli_query($conn,$queryName);
+        $queryName = "SELECT Name FROM users WHERE Name = '".$_POST['newName']."'";
+        $query_run = mysqli_query($conn,$queryName);
+        $result = mysqli_fetch_row($query_run);
+        $result = implode($result);
+    }
+    if (!empty($_POST['newEmail'])) {
+        $queryName = "UPDATE users SET Email = '".$_POST['newEmail']."' WHERE Email = '".$oldData['Email']."' AND Pass = '".$oldData['Pass']."'";
+        $query_run = mysqli_query($conn,$queryName);
+        $queryName = "SELECT Name FROM users WHERE Email = '".$_POST['newEmail']."'";
+        $query_run = mysqli_query($conn,$queryName);
+        $result = mysqli_fetch_row($query_run);
+        $result = implode($result);
+    }
+    if (!empty($_POST['newBirthday'])) {
+        $queryName = "UPDATE users SET Birthday = '".$_POST['newBirthday']."' WHERE Email = '".$oldData['Email']."' AND Pass = '".$oldData['Pass']."'";
+        $query_run = mysqli_query($conn,$queryName);
+        $queryName = "SELECT Name FROM users WHERE Birthday = '".$_POST['newBirthday']."'";
+        $query_run = mysqli_query($conn,$queryName);
+        $result = mysqli_fetch_row($query_run);
+        $result = implode($result);
+    }
+    if (!empty($_POST['newPassword'])) {
+        $queryName = "UPDATE users SET Pass = '".$_POST['newPassword']."' WHERE Email = '".$oldData['Email']."' AND Pass = '".$oldData['Pass']."'";
+        $query_run = mysqli_query($conn,$queryName);
+        $queryName = "SELECT Name FROM users WHERE Pass = '".$_POST['newPassword']."'";
+        $query_run = mysqli_query($conn,$queryName);
+        $result = mysqli_fetch_row($query_run);
+        $result = implode($result);
+    }
+    if (isset($result)) {
+        $querySelect = "SELECT * FROM users WHERE Name = '".$result."' OR Email = '".$result."' OR Birthday = '".$result."'OR Pass = '".$result."'";
+        $query_run = mysqli_query($conn,$querySelect);
+        if(mysqli_num_rows($query_run))
+        {
+            while ($query_row = mysqli_fetch_assoc($query_run))
+            {
+                foreach ($query_row as $key=>$item) {
+                    if ($key === 'Pass') {
+                        break;
+                    }
+                    if (!empty($item)) {
+                        echo $key.': '.$item.'<br>';
+                    }
+                }
+            }
+        }
+    }
+    if (!isset($result)) {
+        $queryDisplay = "SELECT * FROM users WHERE Email = '".$email."' ";
+        $query_run = mysqli_query($conn,$queryDisplay);
+        if(mysqli_num_rows($query_run))
+        {
+            while ($query_row = mysqli_fetch_assoc($query_run))
+            {
+                foreach ($query_row as $key=>$item) {
+                    $oldData[$key] = $item;
+                    if ($key == 'Pass') {
+                        break;
+                    }
+                    echo $key.': '.$item.'<br>';
+                }
+            }
+        }
+    }
 }
 if (isset($_POST['email']) && isset($_POST['password'])) {
     $querySelect = "SELECT Email, Pass FROM users WHERE Email = '".$_POST['email']."' AND Pass = '".$_POST['password']."'";
     if($queryRun = mysqli_query($conn,$querySelect))
     {
-        if(mysqli_num_rows($queryRun)==NULL)
+        if(mysqli_num_rows($queryRun)==NULL || empty($_POST['email']) || empty($_POST['password']))
         {
-            //Flight::redirect('login.php');
+            Flight::redirect('login.php');
         }
         else
         {
@@ -57,18 +121,15 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
                     }
                 }
             }
-            $_SESSION["a"] = $oldData;
+            $_SESSION['a'] = $oldData;
         }
     }
-}
-if (empty($_POST['email']) || empty($_POST['password'])) {
-    Flight::redirect('login.php');
 }
 
 ?>
 <form action="myAccount.php" name="form_login" id="form_login" method="post" class="form-horizontal">
     <fieldset>
-        <legend class="text-center">Update your accout details.</legend>
+        <legend class="text-center">Update your account details.</legend>
         <div class="form-group">
             <label for="name" class="col-sm-2 control-label">Name</label>
             <div class="col-sm-7">
