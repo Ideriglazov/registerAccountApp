@@ -17,41 +17,21 @@
         </div>
     </div>
 </div>
-<style type = "text/css">
-#my_elem {
-2
-position: absolute;
-3
-width: 100px;
-4
-left: 50%;
-5
-margin-left: -50px;
-6
-text-align: center;
-7
-}
-</style>
 <?php
 require 'vendor/autoload.php';
 require 'DBConnection.php';
-/*
-Flight::route('/', function(){
-    echo 'hello world!';
-});
-*/
-//Flight::start();
-if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['birthday']) &&isset($_POST['password'])) {
-    echo 'Data has been submitted'.'<br>';
-    echo $_POST['username'].'<br>';
-    echo $_POST['email'].'<br>';
-    echo $_POST['birthday'].'<br>';
-    echo $_POST['password'].'<br>';
-}
-
-@$queryInsert = "INSERT INTO users(Name, Email, Birthday, Pass) VALUES('".$_POST['username']."','".$_POST['email']."','".$_POST['birthday']."','".$_POST['password']."')";
-if ($conn->query($queryInsert) === true) {
-    echo "You have registered successfully";
-}
-$conn->close();
 ?>
+<h3><div class="col text-center">
+    <?php
+    if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['birthday']) && isset($_POST['password'])) {
+        if (!empty($_POST['username']) && !empty($_POST['email']) && !empty($_POST['birthday']) && !empty($_POST['password'])) {
+            echo 'You have registered successfully' . '<br>';
+            @$queryInsert = "INSERT INTO users(Name, Email, Birthday, Pass) VALUES('" . $_POST['username'] . "','" . $_POST['email'] . "','" . $_POST['birthday'] . "','" . $_POST['password'] . "')";
+            $conn->query($queryInsert);
+            $conn->close();
+        } else {
+            Flight::redirect('register.php');
+        }
+    }
+?>
+</div></h3>

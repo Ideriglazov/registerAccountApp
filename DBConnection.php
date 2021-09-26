@@ -15,10 +15,12 @@ if ($conn->query($queryCreateDB) === false)  {
 $queryUseDB = "USE users";
 if ($conn->query($queryUseDB) === true) {
     $queryCreateTable = "CREATE TABLE IF NOT EXISTS users (
+    id int NOT NULL AUTO_INCREMENT,
     Name varchar(255),
     Email varchar(255),
     Birthday varchar(255),
-    Pass varchar(255)
+    Pass varchar(255),
+    PRIMARY KEY (id)
 )";
     $conn->query($queryCreateTable);
 }

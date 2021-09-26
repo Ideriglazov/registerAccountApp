@@ -18,46 +18,56 @@
 <?php
 require 'vendor/autoload.php';
 require 'DBConnection.php';
-if (isset($_POST['newName']) && isset($_POST['newEmail']) && isset($_POST['newBirthday']) && isset($_POST['newPassword'])) {
+if (isset($_POST['newName']) || isset($_POST['newEmail']) || isset($_POST['newBirthday']) || isset($_POST['newPassword'])) {
     session_start();
     $oldData = $_SESSION['a'];
+    $id = $oldData['id'];
     $name = $oldData['Name'];
     $email = $oldData['Email'];
     $birthday = $oldData['Birthday'];
     if (!empty($_POST['newName'])) {
-        $queryName = "UPDATE users SET Name = '".$_POST['newName']."' WHERE Email = '".$oldData['Email']."' AND Pass = '".$oldData['Pass']."'";
+        $queryName = "UPDATE users SET Name = '".$_POST['newName']."' WHERE id = '".$id."'";
         $query_run = mysqli_query($conn,$queryName);
-        $queryName = "SELECT Name FROM users WHERE Name = '".$_POST['newName']."'";
+        $queryName = "SELECT Name FROM users WHERE id = '".$id."'";
         $query_run = mysqli_query($conn,$queryName);
         $result = mysqli_fetch_row($query_run);
-        $result = implode($result);
+        if (is_array($result)) {
+            $result = implode($result);
+        }
     }
     if (!empty($_POST['newEmail'])) {
-        $queryName = "UPDATE users SET Email = '".$_POST['newEmail']."' WHERE Email = '".$oldData['Email']."' AND Pass = '".$oldData['Pass']."'";
+        $queryName = "UPDATE users SET Email = '".$_POST['newEmail']."' WHERE id = '".$id."'";
         $query_run = mysqli_query($conn,$queryName);
-        $queryName = "SELECT Name FROM users WHERE Email = '".$_POST['newEmail']."'";
+        $queryName = "SELECT Name FROM users WHERE id = '".$id."'";
         $query_run = mysqli_query($conn,$queryName);
         $result = mysqli_fetch_row($query_run);
-        $result = implode($result);
+        if (is_array($result)) {
+            $result = implode($result);
+        }
     }
     if (!empty($_POST['newBirthday'])) {
-        $queryName = "UPDATE users SET Birthday = '".$_POST['newBirthday']."' WHERE Email = '".$oldData['Email']."' AND Pass = '".$oldData['Pass']."'";
+        $queryName = "UPDATE users SET Birthday = '".$_POST['newBirthday']."' WHERE id = '".$id."'";
         $query_run = mysqli_query($conn,$queryName);
-        $queryName = "SELECT Name FROM users WHERE Birthday = '".$_POST['newBirthday']."'";
+        $queryName = "SELECT Name FROM users WHERE id = '".$id."'";
         $query_run = mysqli_query($conn,$queryName);
         $result = mysqli_fetch_row($query_run);
-        $result = implode($result);
+        if (is_array($result)) {
+            $result = implode($result);
+        }
+
     }
     if (!empty($_POST['newPassword'])) {
-        $queryName = "UPDATE users SET Pass = '".$_POST['newPassword']."' WHERE Email = '".$oldData['Email']."' AND Pass = '".$oldData['Pass']."'";
+        $queryName = "UPDATE users SET Pass = '".$_POST['newPassword']."' WHERE id = '".$id."'";
         $query_run = mysqli_query($conn,$queryName);
-        $queryName = "SELECT Name FROM users WHERE Pass = '".$_POST['newPassword']."'";
+        $queryName = "SELECT Name FROM users WHERE id = '".$id."'";
         $query_run = mysqli_query($conn,$queryName);
         $result = mysqli_fetch_row($query_run);
-        $result = implode($result);
+        if (is_array($result)) {
+            $result = implode($result);
+        }
     }
-    if (isset($result)) {
-        $querySelect = "SELECT * FROM users WHERE Name = '".$result."' OR Email = '".$result."' OR Birthday = '".$result."'OR Pass = '".$result."'";
+    if (!empty($result)) {
+        $querySelect = "SELECT * FROM users WHERE id = '".$id."'";
         $query_run = mysqli_query($conn,$querySelect);
         if(mysqli_num_rows($query_run))
         {
@@ -68,14 +78,16 @@ if (isset($_POST['newName']) && isset($_POST['newEmail']) && isset($_POST['newBi
                         break;
                     }
                     if (!empty($item)) {
-                        echo $key.': '.$item.'<br>';
+                        if ($key != 'id') {
+                            echo $key.': '.$item.'<br>';
+                        }
                     }
                 }
             }
         }
     }
-    if (!isset($result)) {
-        $queryDisplay = "SELECT * FROM users WHERE Email = '".$email."' ";
+    if (empty($result)) {
+        $queryDisplay = "SELECT * FROM users WHERE id = '".$id."' ";
         $query_run = mysqli_query($conn,$queryDisplay);
         if(mysqli_num_rows($query_run))
         {
@@ -83,10 +95,12 @@ if (isset($_POST['newName']) && isset($_POST['newEmail']) && isset($_POST['newBi
             {
                 foreach ($query_row as $key=>$item) {
                     $oldData[$key] = $item;
-                    if ($key == 'Pass') {
+                    if ($key === 'Pass') {
                         break;
                     }
-                    echo $key.': '.$item.'<br>';
+                    if ($key != 'id') {
+                        echo $key.': '.$item.'<br>';
+                    }
                 }
             }
         }
@@ -117,7 +131,9 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
                         if ($key == 'Pass') {
                             break;
                         }
-                        echo $key.': '.$item.'<br>';
+                        if ($key != 'id') {
+                            echo $key.': '.$item.'<br>';
+                        }
                     }
                 }
             }

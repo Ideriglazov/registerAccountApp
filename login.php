@@ -8,6 +8,15 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
+<div class="container">
+    <div class="row">
+        <div class="col text-center">
+            <form action="index.php" method="post">
+                <input type="submit" value="Home page" class="btn btn-primary"></input>
+            </form>
+        </div>
+    </div>
+</div>
 <div class="col-sm-8" id="content" style="border-left: #dbe0e3 1px solid;">
     <form action="myAccount.php" name="form_login" id="form_login" method="post" class="form-horizontal">
         <fieldset>
